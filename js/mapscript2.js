@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     markersLayer.addTo(map);
 
     // URL raw dari file CSV di GitHub
-    const csvUrl = 'https://raw.githubusercontent.com/yuzzarr/ProjekSPK/main/data.csv';
+    const csvUrl = 'https://raw.githubusercontent.com/yuzzarr/Sistem-Persebaran-Obat-PrEP/main/data.csv';
 
     // Fungsi untuk membaca CSV dan mengonversinya ke GeoJSON
     function readCSVAndConvertToGeoJSON(url, callback) {

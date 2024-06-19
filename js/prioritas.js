@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // URL raw dari file CSV di GitHub
-    const csvUrl = 'https://raw.githubusercontent.com/yuzzarr/ProjekSPK/main/Kota%20Prioritas.csv';
+    const csvUrl = 'https://raw.githubusercontent.com/yuzzarr/Sistem-Persebaran-Obat-PrEP/main/Kota%20Prioritas.csv';
 
     // Fungsi untuk membaca CSV dan mengisi tabel
     function readCSVAndPopulateTable(url) {
