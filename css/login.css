@@ -1,0 +1,22 @@
+.container {
+    margin-top: 15vh;
+}
+
+/* .btn {
+    background-color: aqua;
+    border-color: aqua;
+} */
+
+/* .bg {
+    background-color: aqua;
+} */
+.h2 {
+    font-size: 13px;
+    margin-top: 1vh;
+}
+.bg-login-image{
+    background:url(https://1.bp.blogspot.com/-1kqgGFOsBF0/Wg-kEl2UpJI/AAAAAAAAFFM/Pa2mKAqjYqEOrqPzLQW43wOQIx8ptE0qgCLcBGAs/s1600/UNS.jpg);
+    background-position:center;
+    background-size:cover;
+    /* margin-left: 1vh; */
+}
