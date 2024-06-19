@@ -55,11 +55,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     window.hitungDistribusi = function() {
-        const totalObat = document.getElementById('totalObat').value;
+        const totalObat = parseInt(document.getElementById('totalObat').value, 10);
         let totalPersentase = 0;
         let totalObatCount = 0;
 
-        if (totalObat === '' || totalObat <= 0) {
+        if (isNaN(totalObat) || totalObat <= 0) {
             alert('Masukkan jumlah obat yang valid!');
             return;
         }
@@ -78,37 +78,58 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        let distribusiObat = [];
+
         window.geojson.forEach(point => {
             let jumlahObat;
 
             if (selectedMethod == 'fuzzyTopsis') {
-                jumlahObat = (totalObat * point.properties.percentage.fuzzyTopsis) / 100;
+                jumlahObat = Math.floor((totalObat * point.properties.percentage.fuzzyTopsis) / 100);
                 totalPersentase += point.properties.percentage.fuzzyTopsis;
             }
             
             if (selectedMethod == 'fuzzyWP') {
-                jumlahObat = (totalObat * point.properties.percentage.fuzzyWP) / 100;
+                jumlahObat = Math.floor((totalObat * point.properties.percentage.fuzzyWP) / 100);
                 totalPersentase += point.properties.percentage.fuzzyWP;
             }
 
             totalObatCount += jumlahObat;
 
-            const marker = L.marker([point.geometry.coordinates[1], point.geometry.coordinates[0]]);
-            marker.bindPopup(`${point.properties.name}: ${jumlahObat} obat`);
+            distribusiObat.push({
+                name: point.properties.name,
+                percentage: selectedMethod == 'fuzzyTopsis' ? point.properties.percentage.fuzzyTopsis : point.properties.percentage.fuzzyWP,
+                jumlahObat: jumlahObat,
+                coordinates: [point.geometry.coordinates[1], point.geometry.coordinates[0]]
+            });
+        });
+
+        // Adjusting the remaining difference
+        let remainingObat = totalObat - totalObatCount;
+        distribusiObat.sort((a, b) => b.percentage - a.percentage);
+        for (let i = 0; remainingObat > 0; i = (i + 1) % distribusiObat.length) {
+            distribusiObat[i].jumlahObat += 1;
+            totalObatCount += 1;
+            remainingObat -= 1;
+        }
+
+        // Add markers and update table
+        distribusiObat.forEach(point => {
+            const marker = L.marker(point.coordinates);
+            marker.bindPopup(`${point.name}: ${point.jumlahObat} obat`);
             marker.addTo(markersLayer);
 
             const row = tableBody.insertRow();
             const cellName = row.insertCell(0);
             const cellPercentage = row.insertCell(1);
             const cellJumlahObat = row.insertCell(2);
-            cellName.innerHTML = point.properties.name;
-            cellPercentage.innerHTML = selectedMethod == 'fuzzyTopsis' ? point.properties.percentage.fuzzyTopsis : point.properties.percentage.fuzzyWP;
-            cellJumlahObat.innerHTML = jumlahObat;
+            cellName.innerHTML = point.name;
+            cellPercentage.innerHTML = point.percentage;
+            cellJumlahObat.innerHTML = point.jumlahObat;
         });
 
         console.log(totalPersentase, totalObatCount);
         // Update total persentase dan total jumlah obat
-        document.getElementById('totalPercentage').textContent = totalPersentase;
+        document.getElementById('totalPercentage').textContent = totalPersentase.toFixed(2);
         document.getElementById('totalObatCount').textContent = totalObatCount;
     }
 });
